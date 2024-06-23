@@ -53,6 +53,18 @@ class OutlineCollectionViewDiffableDataSource<Node: OutlineNodeType & Hashable>:
 }
 
 extension Reactive where Base: UICollectionView {
+    
+    @available(iOS 14.0, *)
+    public func rootNode<OutlineNode: OutlineNodeType & Hashable, Source: ObservableType>(source: Source)
+        -> (@escaping (UICollectionView, IndexPath, OutlineNode) -> UICollectionViewCell?)
+        -> Disposable
+        where OutlineNode.NodeType == OutlineNode, Source.Element == OutlineNode {
+        return { cellProvider in
+            let dataSource = OutlineCollectionViewDiffableDataSource(collectionView: base, cellProvider: cellProvider)
+            return self.items(dataSource: dataSource)(source.map { [$0] })
+        }
+    }
+    
     @available(iOS 14.0, *)
     public func nodes<OutlineNode: OutlineNodeType & Hashable, Source: ObservableType>(source: Source)
         -> (@escaping (UICollectionView, IndexPath, OutlineNode) -> UICollectionViewCell?)

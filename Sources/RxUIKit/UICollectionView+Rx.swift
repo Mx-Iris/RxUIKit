@@ -21,7 +21,10 @@ enum OutlineSection {
 }
 
 @available(iOS 14.0, *)
-class OutlineCollectionViewDiffableDataSource<Node: OutlineNodeType & Hashable>: UICollectionViewDiffableDataSource<OutlineSection, Node>, RxCollectionViewDataSourceType where Node.NodeType == Node {
+class OutlineCollectionViewDiffableDataSource<Node: OutlineNodeType & Hashable>: UICollectionViewDiffableDataSource<OutlineSection, Node>, RxCollectionViewDataSourceType, SectionedViewDataSourceType where Node.NodeType == Node {
+    
+    typealias Element = [Node]
+    
     func collectionView(_ collectionView: UICollectionView, observedEvent: RxSwift.Event<Element>) {
         Binder(self) { target, nodes in
             var snapshot = NSDiffableDataSourceSectionSnapshot<Node>()
@@ -38,7 +41,15 @@ class OutlineCollectionViewDiffableDataSource<Node: OutlineNodeType & Hashable>:
         .on(observedEvent)
     }
 
-    typealias Element = [Node]
+    
+    func model(at indexPath: IndexPath) throws -> Any {
+        precondition(indexPath.section == 0)
+        
+        guard let item = itemIdentifier(for: indexPath) else {
+            throw RxCocoaError.itemsNotYetBound(object: self)
+        }
+        return item
+    }
 }
 
 extension Reactive where Base: UICollectionView {

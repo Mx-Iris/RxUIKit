@@ -55,7 +55,7 @@ class OutlineCollectionViewDiffableDataSource<Node: OutlineNodeType & Hashable>:
         Binder(self) { target, nodes in
             let snapshot = target.snapshot(for: nodes)
             target.apply(snapshot, to: .main, animatingDifferences: false)
-            target.currentSnapshot = snapshot
+//            target.currentSnapshot = snapshot
         }
         .on(event)
     }
@@ -63,7 +63,8 @@ class OutlineCollectionViewDiffableDataSource<Node: OutlineNodeType & Hashable>:
     func collectionView(_ collectionView: UICollectionView, observedFilteredEvent event: RxSwift.Event<Element?>) {
         Binder(self) { target, nodes in
             if let nodes {
-                let snapshot = target.snapshot(for: nodes)
+                target.currentSnapshot = target.snapshot(for: .main)
+                let snapshot = target.snapshot(for: nodes, expandNodes: true)
                 target.apply(snapshot, to: .main, animatingDifferences: false)
                 target.filteredSnapshot = snapshot
             } else if let currentSnapshot = target.currentSnapshot {
@@ -74,9 +75,12 @@ class OutlineCollectionViewDiffableDataSource<Node: OutlineNodeType & Hashable>:
         .on(event)
     }
 
-    func snapshot(for nodes: [Node]) -> Snapshot {
+    func snapshot(for nodes: [Node], expandNodes: Bool = false) -> Snapshot {
         var snapshot = Snapshot()
         func addNodes(_ children: [Node], to parent: Node?) {
+            if expandNodes {
+                snapshot.expand(children)
+            }
             snapshot.append(children, to: parent)
             for child in children where child.isExpandable {
                 addNodes(child.children, to: child)

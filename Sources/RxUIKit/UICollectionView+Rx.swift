@@ -126,7 +126,7 @@ extension Reactive where Base: UICollectionView {
         filteredNodes(source: source.map { [$0] })
     }
     
-    public func filteredNodes<OutlineNode: OutlineNodeType & Hashable, Source: ObservableType>(source: Source) -> Disposable where OutlineNode.NodeType == OutlineNode, Source.Element == [OutlineNode] {
+    public func filteredNodes<OutlineNode: OutlineNodeType & Hashable, Source: ObservableType>(source: Source) -> Disposable where OutlineNode.NodeType == OutlineNode, Source.Element == [OutlineNode]? {
         source.subscribe(onNext: { nodes in
             if let outlineDataSource = dataSource.forwardToDelegate() as? OutlineCollectionViewDiffableDataSource<OutlineNode> {
                 outlineDataSource.collectionView(base, observedFilteredEvent: .next(nodes))

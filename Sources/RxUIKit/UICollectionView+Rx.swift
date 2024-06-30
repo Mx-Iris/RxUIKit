@@ -35,7 +35,9 @@ class OutlineCollectionViewDiffableDataSource<Node: OutlineNodeType & Hashable>:
     init(collectionView: UICollectionView, configureCell: @escaping ConfigureCell) {
         let headerCellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, Node> { cell, indexPath, node in
             configureCell(collectionView, indexPath, node, cell)
+            #if os(iOS)
             cell.accessories = [.outlineDisclosure(options: .init(style: .header))]
+            #endif
         }
 
         let listCellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, Node> { cell, indexPath, node in

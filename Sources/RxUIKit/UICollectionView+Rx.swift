@@ -20,7 +20,7 @@ enum OutlineSection {
     case main
 }
 
-@available(iOS 14.0, *)
+@available(iOS 14.0, tvOS 14.0, *)
 class OutlineCollectionViewDiffableDataSource<Node: OutlineNodeType & Hashable>: UICollectionViewDiffableDataSource<OutlineSection, Node>, RxCollectionViewDataSourceType, SectionedViewDataSourceType where Node.NodeType == Node {
     typealias ConfigureCell = (UICollectionView, IndexPath, Node, UICollectionViewListCell) -> Void
 
@@ -105,10 +105,10 @@ class OutlineCollectionViewDiffableDataSource<Node: OutlineNodeType & Hashable>:
 
 import OSLog
 
-@available(iOS 14.0, *)
+@available(iOS 14.0, tvOS 14.0, *)
 private let logger = Logger(subsystem: "com.JH.RxUIKit", category: "UICollectionView")
 
-@available(iOS 14.0, *)
+@available(iOS 14.0, tvOS 14.0, *)
 extension Reactive where Base: UICollectionView {
     public func rootNode<OutlineNode: OutlineNodeType & Hashable, Source: ObservableType>(source: Source)
         -> (@escaping (UICollectionView, IndexPath, OutlineNode, UICollectionViewListCell) -> Void)
